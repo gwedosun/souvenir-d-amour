@@ -646,48 +646,17 @@
     </main>
 
     <script>
-        // ─── DADOS ───
-        let data = [
-            {
-                "comment il s'appelle?": "m, mullet boy",
-                "formation professionnelle ou universitaire": "avocat",
-                "l'âge": "24",
-                "hauteur": "1,74m",
-                "nombre de rencontres": "> 5",
-                "intimité physique": "false",
-                "intimité émotionelle": "false",
-                "beauté": "4/5",
-                "note finale": "3/5",
-                "je le ferai à noveau?": "true",
-                "notes": "Un rendez-vous sympa, bonne conversation mais pas de feeling particulier. Il est très drôle et a un bon sens de l'humour."
-            },
-            {
-                "comment il s'appelle?": "Jean, le charmeur",
-                "formation professionnelle ou universitaire": "architecte",
-                "l'âge": "28",
-                "hauteur": "1,82m",
-                "nombre de rencontres": "3",
-                "intimité physique": "true",
-                "intimité émotionelle": "true",
-                "beauté": "5/5",
-                "note finale": "4.5/5",
-                "je le ferai à noveau?": "true",
-                "notes": "Superbe rencontre ! Il est attentionné, intelligent et très beau. On a passé un moment magique au restaurant. À revoir absolument !"
-            },
-            {
-                "comment il s'appelle?": "Lucas, le musicien",
-                "formation professionnelle ou universitaire": "prof de guitare",
-                "l'âge": "26",
-                "hauteur": "1,70m",
-                "nombre de rencontres": "1",
-                "intimité physique": "false",
-                "intimité émotionelle": "true",
-                "beauté": "3/5",
-                "note finale": "2.5/5",
-                "je le ferai à noveau?": "false",
-                "notes": "Pas de feeling. Il est gentil mais on n'a pas accroché. Ses blagues sont un peu lourdes et il parlait trop de lui."
-            }
-        ];
+        let data = [];
+
+        // Carregar dados
+        fetch('data.json')
+            .then(res => res.json())
+            .then(json => {
+                data = json;
+                renderCards();      // ← ADICIONE ESTA LINHA
+                updateHomeStats();  // ← ADICIONE ESTA LINHA
+            })
+            .catch(err => console.error('Erro:', err));
 
         // ─── NAVEGAÇÃO ───
         document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -965,14 +934,14 @@
         }
 
         // ─── INIT ───
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCards();
-            updateHomeStats();
-        });
+document.addEventListener('DOMContentLoaded', () => {
+    // NÃO chame renderCards aqui
+    // NÃO chame updateHomeStats aqui
+    // O fetch já vai chamar quando carregar
+});
 
 
     </script>
-        <script src="app.js"></script>
 
 </body>
 </html>

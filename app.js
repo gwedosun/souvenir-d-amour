@@ -358,15 +358,12 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Application démarrée');
     
-    // Tenta carregar do localStorage primeiro
     const localData = carregarDadosLocal();
     
     if (!localData) {
-        // Se não tem dados locais, carrega do JSON
         console.log('📡 Chargement des données depuis data.json...');
         carregarDados();
     } else {
-        // Se carregou do localStorage, renderiza
         console.log('💾 Utilisation des données du localStorage');
         renderCards();
         updateHomeStats();
