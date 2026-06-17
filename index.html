@@ -1,153 +1,351 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Journal de mes Rencontres</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mes rendez-vous · cartes</title>
+    <!-- Google Fonts (douce & élégante) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ─── VARIÁVEIS DE CORES (ROOT) ─── */
+        :root {
+        /* Cores principais - Pastel */
+            --cor-rosa: #63103b;
+            --cor-rosa-claro: #e8bed4;
+            --cor-rosa-bg: #fcf5f0;
+            --cor-rosa-borda: #f0ded6;
+            --cor-rosa-escuro: #4a1a2e;  /* Alterado para um rosa escuro */
+            
+            --cor-verde: #dde8e0;
+            --cor-verde-claro: #e8f0ea;
+            --cor-verde-escuro: #4a1a2e;
+            --cor-verde-bg: #e8f0ea;
+            
+            --cor-cinza: #d87cac; /* rendez vous*/
+            --cor-cinza-claro: #f6f2f0;
+            --cor-cartes: #bc5389;
+            --cor-cinza-escuro: #6b3a73;  /* Alterado para roxo/cinza escuro */
+            --cor-cinza-borda: #e4d5ce;
+            --cor-cinza-card: #fcf8f6;
+            
+            /* Cores de texto - TODAS alteradas para cinza ou rosa escuro */
+            --cor-texto-principal: #2d1428;  /* Rosa muito escuro (quase preto) */
+            --cor-texto-secundario: #4a1a2e;  /* Rosa escuro */
+            --cor-texto-claro: #3d1a33;  /* Rosa escuro */
+            --cor-texto-escuro: #2d1428;  /* Rosa muito escuro */
+            
+            /* Cores de fundo */
+            --cor-fundo-body: #b6c5ba;
+            --cor-fundo-card: #bc5389;
+            --cor-fundo-detalhes: #e8bed4;
+            --cor-fundo-badge: #f2ebe7;
+            
+            /* Cores de borda */
+            --cor-borda-card: #d04b94;
+            --cor-borda-hover: #e09ac0;
+            --cor-borda-dashed: #82717a;
+            
+            /* Sombras - ajustadas para combinar com as novas cores */
+            --sombra-card: 0 12px 28px rgba(99, 16, 59, 0.15);
+            --sombra-card-hover: 0 20px 32px rgba(99, 16, 59, 0.20);
+            --sombra-botao: 0 4px 12px rgba(99, 16, 59, 0.12);
+            --sombra-botao-hover: 0 8px 20px rgba(99, 16, 59, 0.18);
+        }
+        /* ─── RESET & BASE ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--cor-fundo-body);
+            font-family: 'Quicksand', sans-serif;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ─── TITRE ─── */
+        .page-title {
+            font-weight: 400;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            color: var(--cor-cinza);
+            margin-bottom: 2.5rem;
+            border-bottom: 2px dashed var(--cor-borda-dashed);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .page-title span {
+            font-weight: 600;
+            color: var(--cor-cartes);
+        }
+
+        /* ─── BOUTON AJOUTER ─── */
+        .add-button-container {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-add {
+            background: var(--cor-verde);
+            color: var(--cor-verde-escuro);
+            border: none;
+            padding: 0.6rem 1.8rem;
+            border-radius: 40px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--sombra-botao);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add:hover {
+            background: #c8d9cf;  /* Versão mais escura do verde */
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-botao-hover);
+        }
+
+        /* ─── GRILLE DE CARTES ─── */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+            gap: 2rem 1.8rem;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* ─── CARTE ─── */
+        .card {
+            background: var(--cor-fundo-card);
+            backdrop-filter: blur(2px);
+            border-radius: 32px 12px 32px 12px;
+            padding: 1.6rem 1.4rem 1.8rem;
+            box-shadow: var(--sombra-card);
+            transition: transform 0.2s ease, box-shadow 0.25s ease;
+            border: 1px solid var(--cor-borda-card);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--sombra-card-hover);
+            border-color: var(--cor-borda-hover);
+        }
+
+        /* nom / en-tête */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .card-nom {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--cor-texto-principal);
+            letter-spacing: -0.2px;
+        }
+
+        .card-nom small {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--cor-texto-secundario);
+            margin-left: 6px;
+        }
+
+        .card-age {
+            background: var(--cor-rosa-claro);  /* ← AGORA USA ROSA CLARO */
+            padding: 0.2rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--cor-texto-escuro);  /* ← TEXTO EM ROSA ESCURO */
+        }
+
+        /* détails en grille */
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem 0.8rem;
+            margin: 0.8rem 0 1rem;
+            background: var(--cor-fundo-detalhes);
+            padding: 0.8rem 1rem;
+            border-radius: 24px 6px 24px 6px;
+            border: 1px solid var(--cor-borda-card);
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.8rem;
+        }
+
+        .detail-label {
+            font-weight: 400;
+            color: var(--cor-texto-claro);
+            letter-spacing: 0.3px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: var(--cor-texto-escuro);
+            margin-top: 2px;
+            word-break: break-word;
+        }
+
+        .detail-value.alt {
+            color: var(--cor-rosa-escuro);
+        }
+
+        /* indicateurs d'intimité et beauté */
+        .card-flags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.2rem 0 1rem;
+            padding: 0 0.1rem;
+        }
+
+        .flag-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .flag-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #687474;
+            background: var(--cor-fundo-badge);
+            padding: 0.2rem 0.7rem 0.2rem 0.5rem;
+            border-radius: 40px;
+        }
+
+        .flag-badge .icon {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .flag-badge.true {
+            background: var(--cor-verde);
+            color: var(--cor-verde-escuro);
+        }
+
+        .flag-badge.false {
+            background: var(--cor-rosa-claro);
+            color: #8f6e63;
+        }
+
+        .beauty-stars {
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            color: var(--cor-rosa);
+            background: var(--cor-rosa-bg);
+            padding: 0.1rem 0.7rem;
+            border-radius: 40px;
+            border: 1px solid var(--cor-rosa-borda);
+        }
+
+        /* note finale et "recommencer ?" */
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.4rem;
+            border-top: 1px dashed var(--cor-borda-dashed);
+            padding-top: 0.9rem;
+        }
+
+        .note-finale {
+            font-weight: 600;
+            font-size: 1.2rem;
+            background: var(--cor-rosa-claro);  /* ← AGORA USA ROSA CLARO */
+            padding: 0.1rem 1rem;
+            border-radius: 40px;
+            color: var(--cor-texto-escuro);  /* ← TEXTO EM ROSA ESCURO */
+            letter-spacing: 0.5px;
+        }
+
+        .repeat-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--cor-texto-escuro);  /* ← TEXTO EM ROSA ESCURO */
+            background: #fcfffc;  /* Mantém verde claro para contraste */
+            padding: 0.2rem 1rem 0.2rem 0.8rem;
+            border-radius: 40px;
+        }
+
+        .repeat-badge .icon {
+            font-size: 1.2rem;
+        }
+
+        /* message quand aucune donnée */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #aa9890;
+            font-size: 1.1rem;
+            background: var(--cor-fundo-detalhes);
+            border-radius: 60px 12px 60px 12px;
+            border: 1px solid #ecdcd5;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 540px) {
+            body { padding: 1.2rem 0.8rem; }
+            .card { padding: 1.2rem; }
+            .card-details { grid-template-columns: 1fr; gap: 0.3rem; }
+            .card-flags { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .page-title { font-size: 1.4rem; }
+            .add-button-container { justify-content: center; }
+        }
+    </style>
+
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Le Journal de mes Rencontres</h1>
-        <p>Analyses détaillées et suivis de mes dates au fil de l'année.</p>
-    </header>
+    <h2 class="page-title"><span>cartes</span> · rendez-vous</h2>
 
-    <!-- Statistics Section -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Total Rencontres</h3>
-            <div class="value" id="stat-total-dates">0</div>
-        </div>
-        <div class="stat-card">
-            <h3>Taux de Match</h3>
-            <div class="value" id="stat-repeat-rate">0%</div>
-        </div>
-        <div class="stat-card">
-            <h3>Moyenne Beauté</h3>
-            <div class="value" id="stat-avg-beauty">0/5</div>
-        </div>
-        <div class="stat-card">
-            <h3>Note Globale</h3>
-            <div class="value" id="stat-avg-final">0/5</div>
-        </div>
+    <div class="add-button-container">
+        <button class="btn-add" onclick="ajouterCardExemple()">
+            ✚ Ajouter un card
+        </button>
     </div>
 
-    <!-- Filters and Search Bar -->
-    <div class="controls">
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Rechercher par nom ou profession..." oninput="filterAndRender()">
-        </div>
-        <div class="filter-groups">
-            <select id="filter-repeat" onchange="filterAndRender()">
-                <option value="all">À refaire ? (Tous)</option>
-                <option value="true">Oui</option>
-                <option value="false">Non</option>
-            </select>
-            <select id="filter-intimacy" onchange="filterAndRender()">
-                <option value="all">Intimité Physique (Tous)</option>
-                <option value="true">Avec</option>
-                <option value="false">Sans</option>
-            </select>
-            <select id="sort-by" onchange="filterAndRender()">
-                <option value="default">Trier par...</option>
-                <option value="note-desc">Note finale (Élevée)</option>
-                <option value="beauty-desc">Beauté (Élevée)</option>
-            </select>
-        </div>
+    <div id="cardsContainer" class="cards-grid">
+        <!-- les cartes seront injectées via JS -->
     </div>
 
-    <!-- Main Content Layout -->
-    <div class="main-layout">
-        <!-- Cards Column -->
-        <div class="cards-grid" id="cards-container">
-            <!-- Dynamic Cards Load Here -->
-        </div>
-
-        <!-- Sidebar Form Column -->
-        <div class="sidebar">
-            <h2>Ajouter une Entrée</h2>
-            <form id="date-form" onsubmit="handleFormSubmit(event)">
-                <div class="form-group">
-                    <label>Comment il s'appelle ?</label>
-                    <input type="text" id="form-name" required placeholder="Ex: M, mullet boy">
-                </div>
-                <div class="form-group">
-                    <label>Formation Pro / Uni</label>
-                    <input type="text" id="form-job" required placeholder="Ex: Avocat">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Âge</label>
-                        <input type="number" id="form-age" required placeholder="24">
-                    </div>
-                    <div class="form-group">
-                        <label>Hauteur</label>
-                        <input type="text" id="form-height" required placeholder="1,74m">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Nombre de rencontres</label>
-                    <input type="text" id="form-encounters" required placeholder="Ex: > 5">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Intimité Physique</label>
-                        <select id="form-physical">
-                            <option value="true">Oui</option>
-                            <option value="false" selected>Non</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Intimité Émotionnelle</label>
-                        <select id="form-emotional">
-                            <option value="true">Oui</option>
-                            <option value="false" selected>Non</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Beauté</label>
-                        <select id="form-beauty">
-                            <option value="5/5">5/5</option>
-                            <option value="4/5" selected>4/5</option>
-                            <option value="3/5">3/5</option>
-                            <option value="2/5">2/5</option>
-                            <option value="1/5">1/5</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Note Finale</label>
-                        <select id="form-final">
-                            <option value="5/5">5/5</option>
-                            <option value="4/5">4/5</option>
-                            <option value="3/5" selected>3/5</option>
-                            <option value="2/5">2/5</option>
-                            <option value="1/5">1/5</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>À refaire ?</label>
-                    <select id="form-again">
-                        <option value="true" selected>Oui</option>
-                        <option value="false">Non</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-            </form>
-
-            <div class="json-section">
-                <button class="btn btn-secondary" onclick="exportJSON()">Exporter le JSON mis à jour</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
