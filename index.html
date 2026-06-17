@@ -4,38 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>mes rendez-vous · cartes</title>
-    <!-- Google Fonts (douce & élégante) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
     <style>
         /* ─── VARIÁVEIS DE CORES (ROOT) ─── */
         :root {
-        /* Cores principais - Pastel */
+            /* Cores principais - Pastel */
             --cor-rosa: #63103b;
             --cor-rosa-claro: #e8bed4;
             --cor-rosa-bg: #fcf5f0;
             --cor-rosa-borda: #f0ded6;
-            --cor-rosa-escuro: #4a1a2e;  /* Alterado para um rosa escuro */
+            --cor-rosa-escuro: #4a1a2e;
             
             --cor-verde: #dde8e0;
-            --cor-verde-claro: #e8f0ea;
-            --cor-verde-escuro: #4a1a2e;
+            --cor-verde-claro: #e2ede6;
+            --cor-verde-escuro: #004f2d;
             --cor-verde-bg: #e8f0ea;
             
-            --cor-cinza: #d87cac; /* rendez vous*/
+            --cor-cinza: #d87cac;
             --cor-cinza-claro: #f6f2f0;
             --cor-cartes: #bc5389;
-            --cor-cinza-escuro: #6b3a73;  /* Alterado para roxo/cinza escuro */
+            --cor-cinza-escuro: #6b3a73;
             --cor-cinza-borda: #e4d5ce;
             --cor-cinza-card: #fcf8f6;
             
-            /* Cores de texto - TODAS alteradas para cinza ou rosa escuro */
-            --cor-texto-principal: #2d1428;  /* Rosa muito escuro (quase preto) */
-            --cor-texto-secundario: #4a1a2e;  /* Rosa escuro */
-            --cor-texto-claro: #3d1a33;  /* Rosa escuro */
-            --cor-texto-escuro: #2d1428;  /* Rosa muito escuro */
+            /* Cores de texto */
+            --cor-texto-principal: #2d1428;
+            --cor-texto-secundario: #4a1a2e;
+            --cor-texto-claro: #3d1a33;
+            --cor-texto-escuro: #2d1428;
             
             /* Cores de fundo */
             --cor-fundo-body: #b6c5ba;
@@ -48,12 +46,16 @@
             --cor-borda-hover: #e09ac0;
             --cor-borda-dashed: #82717a;
             
-            /* Sombras - ajustadas para combinar com as novas cores */
+            /* Sombras */
             --sombra-card: 0 12px 28px rgba(99, 16, 59, 0.15);
             --sombra-card-hover: 0 20px 32px rgba(99, 16, 59, 0.20);
             --sombra-botao: 0 4px 12px rgba(99, 16, 59, 0.12);
             --sombra-botao-hover: 0 8px 20px rgba(99, 16, 59, 0.18);
+            
+            /* Transições */
+            --transicao: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         /* ─── RESET & BASE ─── */
         * {
             margin: 0;
@@ -64,42 +66,157 @@
         body {
             background: var(--cor-fundo-body);
             font-family: 'Quicksand', sans-serif;
-            padding: 2rem 1.5rem;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* ─── TITRE ─── */
-        .page-title {
-            font-weight: 400;
-            font-size: 1.8rem;
-            letter-spacing: 2px;
-            color: var(--cor-cinza);
-            margin-bottom: 2.5rem;
-            border-bottom: 2px dashed var(--cor-borda-dashed);
-            padding-bottom: 0.5rem;
-            display: inline-block;
+        /* ─── HEADER COM NAVEGAÇÃO ─── */
+        .main-header {
+            width: 100%;
+            background: var(--cor-fundo-card);
+            padding: 1rem 2rem;
+            box-shadow: var(--sombra-card);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .page-title span {
+        .logo {
             font-weight: 600;
-            color: var(--cor-cartes);
+            font-size: 1.3rem;
+            color: var(--cor-texto-principal);
         }
 
-        /* ─── BOUTON AJOUTER ─── */
-        .add-button-container {
+        .logo span {
+            color: var(--cor-rosa);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1.2rem;
+            border: 2px solid transparent;
+            border-radius: 40px;
+            background: transparent;
+            color: var(--cor-texto-secundario);
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--cor-rosa-claro);
+            color: var(--cor-texto-principal);
+        }
+
+        .nav-btn.active {
+            background: var(--cor-rosa);
+            color: white;
+            border-color: var(--cor-rosa);
+        }
+
+        /* ─── CONTEÚDO PRINCIPAL ─── */
+        .main-content {
             width: 100%;
             max-width: 1200px;
-            margin-bottom: 2rem;
+            padding: 2rem 1.5rem;
+            flex: 1;
+        }
+
+        /* ─── PÁGINAS ─── */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── PÁGINA HOME ─── */
+        .home-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .home-header h1 {
+            font-size: 2.5rem;
+            color: var(--cor-texto-principal);
+            margin-bottom: 0.5rem;
+        }
+
+        .home-header p {
+            color: var(--cor-texto-secundario);
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: var(--cor-fundo-card);
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--cor-borda-card);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--cor-rosa);
+        }
+
+        .stat-label {
+            color: var(--cor-texto-secundario);
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ─── PÁGINA CARDS ─── */
+        .page-header {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h2 {
+            color: var(--cor-texto-principal);
         }
 
         .btn-add {
             background: var(--cor-verde);
-            color: var(--cor-verde-escuro);
+            color: var(--cor-texto-escuro);
             border: none;
             padding: 0.6rem 1.8rem;
             border-radius: 40px;
@@ -115,7 +232,7 @@
         }
 
         .btn-add:hover {
-            background: #c8d9cf;  /* Versão mais escura do verde */
+            background: #c8d9cf;
             transform: translateY(-2px);
             box-shadow: var(--sombra-botao-hover);
         }
@@ -126,31 +243,131 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
             gap: 2rem 1.8rem;
             justify-content: center;
-            max-width: 1200px;
-            width: 100%;
         }
 
-        /* ─── CARTE ─── */
-        .card {
-            background: var(--cor-fundo-card);
-            backdrop-filter: blur(2px);
+        /* ─── CARD COM FLIP ─── */
+        .card-flip-container {
+            perspective: 1000px;
+            height: 420px;
+            cursor: pointer;
+        }
+
+        .card-flip {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform var(--transicao);
+            transform-style: preserve-3d;
+        }
+
+        .card-flip-container:hover .card-flip {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
             border-radius: 32px 12px 32px 12px;
             padding: 1.6rem 1.4rem 1.8rem;
-            box-shadow: var(--sombra-card);
-            transition: transform 0.2s ease, box-shadow 0.25s ease;
             border: 1px solid var(--cor-borda-card);
+            box-shadow: var(--sombra-card);
             display: flex;
             flex-direction: column;
-            position: relative;
+            transition: box-shadow 0.3s ease;
         }
 
-        .card:hover {
-            transform: translateY(-6px);
+        .card-face:hover {
             box-shadow: var(--sombra-card-hover);
-            border-color: var(--cor-borda-hover);
         }
 
-        /* nom / en-tête */
+        /* Frente */
+        .card-front {
+            background: var(--cor-fundo-card);
+            transform: rotateY(0deg);
+        }
+
+        /* Verso */
+        .card-back {
+            background: var(--cor-rosa-claro);
+            transform: rotateY(180deg);
+            border-color: var(--cor-rosa);
+            overflow-y: auto;
+        }
+
+        .card-back::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .card-back::-webkit-scrollbar-thumb {
+            background: var(--cor-rosa);
+            border-radius: 10px;
+        }
+
+        .card-back-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            height: 100%;
+        }
+
+        .card-back-title {
+            font-weight: 600;
+            color: var(--cor-texto-principal);
+            font-size: 1.1rem;
+            border-bottom: 2px dashed var(--cor-rosa-borda);
+            padding-bottom: 0.5rem;
+        }
+
+        .card-back-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .card-back-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--cor-texto-secundario);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .card-back-value {
+            font-size: 0.9rem;
+            color: var(--cor-texto-escuro);
+            padding: 0.3rem 0.6rem;
+            background: rgba(255,255,255,0.5);
+            border-radius: 8px;
+            word-wrap: break-word;
+        }
+
+        .card-back-notes {
+            flex: 1;
+            min-height: 60px;
+        }
+
+        .card-back-notes textarea {
+            width: 100%;
+            height: 100%;
+            min-height: 60px;
+            border: 1px solid var(--cor-rosa-borda);
+            border-radius: 8px;
+            padding: 0.5rem;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.85rem;
+            background: rgba(255,255,255,0.6);
+            resize: vertical;
+            color: var(--cor-texto-escuro);
+        }
+
+        .card-back-notes textarea:focus {
+            outline: 2px solid var(--cor-rosa);
+            border-color: transparent;
+        }
+
+        /* Estilos da frente (mantidos) */
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -174,15 +391,14 @@
         }
 
         .card-age {
-            background: var(--cor-rosa-claro);  /* ← AGORA USA ROSA CLARO */
+            background: var(--cor-rosa-claro);
             padding: 0.2rem 0.9rem;
             border-radius: 30px;
             font-size: 0.85rem;
             font-weight: 500;
-            color: var(--cor-texto-escuro);  /* ← TEXTO EM ROSA ESCURO */
+            color: var(--cor-texto-escuro);
         }
 
-        /* détails en grille */
         .card-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -219,7 +435,6 @@
             color: var(--cor-rosa-escuro);
         }
 
-        /* indicateurs d'intimité et beauté */
         .card-flags {
             display: flex;
             flex-wrap: wrap;
@@ -241,7 +456,7 @@
             gap: 0.25rem;
             font-size: 0.75rem;
             font-weight: 500;
-            color: #687474;
+            color: var(--cor-texto-escuro);
             background: var(--cor-fundo-badge);
             padding: 0.2rem 0.7rem 0.2rem 0.5rem;
             border-radius: 40px;
@@ -254,12 +469,12 @@
 
         .flag-badge.true {
             background: var(--cor-verde);
-            color: var(--cor-verde-escuro);
+            color: var(--cor-texto-escuro);
         }
 
         .flag-badge.false {
             background: var(--cor-rosa-claro);
-            color: #8f6e63;
+            color: var(--cor-texto-escuro);
         }
 
         .beauty-stars {
@@ -272,7 +487,6 @@
             border: 1px solid var(--cor-rosa-borda);
         }
 
-        /* note finale et "recommencer ?" */
         .card-footer {
             display: flex;
             justify-content: space-between;
@@ -285,10 +499,10 @@
         .note-finale {
             font-weight: 600;
             font-size: 1.2rem;
-            background: var(--cor-rosa-claro);  /* ← AGORA USA ROSA CLARO */
+            background: var(--cor-rosa-claro);
             padding: 0.1rem 1rem;
             border-radius: 40px;
-            color: var(--cor-texto-escuro);  /* ← TEXTO EM ROSA ESCURO */
+            color: var(--cor-texto-escuro);
             letter-spacing: 0.5px;
         }
 
@@ -298,8 +512,8 @@
             gap: 0.4rem;
             font-weight: 500;
             font-size: 0.9rem;
-            color: var(--cor-texto-escuro);  /* ← TEXTO EM ROSA ESCURO */
-            background: #fcfffc;  /* Mantém verde claro para contraste */
+            color: var(--cor-texto-escuro);
+            background: var(--cor-verde-claro);
             padding: 0.2rem 1rem 0.2rem 0.8rem;
             border-radius: 40px;
         }
@@ -308,44 +522,457 @@
             font-size: 1.2rem;
         }
 
-        /* message quand aucune donnée */
+        /* ─── DICA DO FLIP ─── */
+        .flip-hint {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 0.65rem;
+            color: var(--cor-texto-secundario);
+            opacity: 0.6;
+            background: rgba(255,255,255,0.7);
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+        }
+
+        /* ─── EMPTY STATE ─── */
         .empty-state {
             grid-column: 1 / -1;
             text-align: center;
             padding: 4rem 2rem;
-            color: #aa9890;
+            color: var(--cor-texto-secundario);
             font-size: 1.1rem;
             background: var(--cor-fundo-detalhes);
             border-radius: 60px 12px 60px 12px;
-            border: 1px solid #ecdcd5;
+            border: 1px solid var(--cor-borda-card);
         }
 
         /* ─── RESPONSIVE ─── */
-        @media (max-width: 540px) {
-            body { padding: 1.2rem 0.8rem; }
-            .card { padding: 1.2rem; }
-            .card-details { grid-template-columns: 1fr; gap: 0.3rem; }
-            .card-flags { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-            .page-title { font-size: 1.4rem; }
-            .add-button-container { justify-content: center; }
+        @media (max-width: 640px) {
+            .main-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                justify-content: center;
+            }
+
+            .nav-btn {
+                font-size: 0.8rem;
+                padding: 0.4rem 1rem;
+            }
+
+            .home-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .card-flip-container {
+                height: 400px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-details {
+                grid-template-columns: 1fr;
+                gap: 0.3rem;
+            }
+
+            .card-flags {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
-
 </head>
 <body>
 
-    <h2 class="page-title"><span>cartes</span> · rendez-vous</h2>
+    <header class="main-header">
+        <div class="logo">💕 <span>mes</span> rendez-vous</div>
+        <nav class="nav-menu">
+            <button class="nav-btn active" data-page="home">🏠 Accueil</button>
+            <button class="nav-btn" data-page="cards">📇 Tous les cards</button>
+            <button class="nav-btn" data-page="stats">📊 Statistiques</button>
+        </nav>
+    </header>
 
-    <div class="add-button-container">
-        <button class="btn-add" onclick="ajouterCardExemple()">
-            ✚ Ajouter un card
-        </button>
-    </div>
+    <main class="main-content">
+        <!-- PÁGINA HOME -->
+        <section id="page-home" class="page active">
+            <div class="home-header">
+                <h1>🌸 Mes rendez-vous</h1>
+                <p>Un carnet de souvenirs pour ne rien oublier ✨</p>
+            </div>
+            <div id="homeStats" class="stats-grid">
+                <!-- Estatísticas serão injetadas via JS -->
+            </div>
+        </section>
 
-    <div id="cardsContainer" class="cards-grid">
-        <!-- les cartes seront injectées via JS -->
-    </div>
+        <!-- PÁGINA CARDS -->
+        <section id="page-cards" class="page">
+            <div class="page-header">
+                <h2>📇 Tous les cards</h2>
+                <button class="btn-add" onclick="ajouterCard()">✚ Ajouter un card</button>
+            </div>
+            <div id="cardsContainer" class="cards-grid">
+                <!-- Cards serão injetados via JS -->
+            </div>
+        </section>
 
-    <script src="app.js"></script>
+        <!-- PÁGINA STATS -->
+        <section id="page-stats" class="page">
+            <div class="page-header">
+                <h2>📊 Statistiques détaillées</h2>
+            </div>
+            <div id="statsDetails" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <!-- Estatísticas detalhadas via JS -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // ─── DADOS ───
+        let data = [
+            {
+                "comment il s'appelle?": "m, mullet boy",
+                "formation professionnelle ou universitaire": "avocat",
+                "l'âge": "24",
+                "hauteur": "1,74m",
+                "nombre de rencontres": "> 5",
+                "intimité physique": "false",
+                "intimité émotionelle": "false",
+                "beauté": "4/5",
+                "note finale": "3/5",
+                "je le ferai à noveau?": "true",
+                "notes": "Un rendez-vous sympa, bonne conversation mais pas de feeling particulier. Il est très drôle et a un bon sens de l'humour."
+            },
+            {
+                "comment il s'appelle?": "Jean, le charmeur",
+                "formation professionnelle ou universitaire": "architecte",
+                "l'âge": "28",
+                "hauteur": "1,82m",
+                "nombre de rencontres": "3",
+                "intimité physique": "true",
+                "intimité émotionelle": "true",
+                "beauté": "5/5",
+                "note finale": "4.5/5",
+                "je le ferai à noveau?": "true",
+                "notes": "Superbe rencontre ! Il est attentionné, intelligent et très beau. On a passé un moment magique au restaurant. À revoir absolument !"
+            },
+            {
+                "comment il s'appelle?": "Lucas, le musicien",
+                "formation professionnelle ou universitaire": "prof de guitare",
+                "l'âge": "26",
+                "hauteur": "1,70m",
+                "nombre de rencontres": "1",
+                "intimité physique": "false",
+                "intimité émotionelle": "true",
+                "beauté": "3/5",
+                "note finale": "2.5/5",
+                "je le ferai à noveau?": "false",
+                "notes": "Pas de feeling. Il est gentil mais on n'a pas accroché. Ses blagues sont un peu lourdes et il parlait trop de lui."
+            }
+        ];
+
+        // ─── NAVEGAÇÃO ───
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const page = this.dataset.page;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(`page-${page}`).classList.add('active');
+                
+                if (page === 'home') updateHomeStats();
+                if (page === 'stats') updateStatsDetails();
+            });
+        });
+
+        // ─── RENDER CARDS ───
+        function renderCards() {
+            const container = document.getElementById('cardsContainer');
+            if (!container) return;
+
+            if (!data || data.length === 0) {
+                container.innerHTML = `<div class="empty-state">✨ aucun rendez-vous enregistré pour l'instant</div>`;
+                return;
+            }
+
+            let html = '';
+
+            data.forEach((rencontre, index) => {
+                const nom = rencontre["comment il s'appelle?"] || "—";
+                const formation = rencontre["formation professionnelle ou universitaire"] || "—";
+                const age = rencontre["l'âge"] || "—";
+                const taille = rencontre["hauteur"] || "—";
+                const nbRencontres = rencontre["nombre de rencontres"] || "—";
+                const physique = rencontre["intimité physique"] || "false";
+                const emotionnel = rencontre["intimité émotionelle"] || "false";
+                const beaute = rencontre["beauté"] || "—";
+                const noteFinale = rencontre["note finale"] || "—";
+                const recommencer = rencontre["je le ferai à noveau?"] || "false";
+                const notes = rencontre["notes"] || "Aucune note pour ce rendez-vous.";
+
+                // Estrelas
+                let etoilesHtml = '';
+                if (beaute !== '—') {
+                    const noteBeaute = parseInt(beaute);
+                    if (!isNaN(noteBeaute) && noteBeaute >= 0 && noteBeaute <= 5) {
+                        const etoiles = '★'.repeat(noteBeaute) + '☆'.repeat(5 - noteBeaute);
+                        etoilesHtml = `<span class="beauty-stars">${etoiles}</span>`;
+                    } else {
+                        etoilesHtml = `<span class="beauty-stars">☆☆☆☆☆</span>`;
+                    }
+                } else {
+                    etoilesHtml = `<span class="beauty-stars">☆☆☆☆☆</span>`;
+                }
+
+                const physiqueIcon = physique === 'true' ? '💚' : '🤍';
+                const emotionnelIcon = emotionnel === 'true' ? '💗' : '🤍';
+                const physiqueLabel = physique === 'true' ? 'oui' : 'non';
+                const emotionnelLabel = emotionnel === 'true' ? 'oui' : 'non';
+                const recommencerIcon = recommencer === 'true' ? '🔄' : '⏸️';
+                const recommencerText = recommencer === 'true' ? 'oui' : 'non';
+
+                html += `
+                    <div class="card-flip-container">
+                        <div class="card-flip">
+                            <!-- FRENTE -->
+                            <div class="card-face card-front">
+                                <div class="card-header">
+                                    <span class="card-nom">${nom} <small>${formation}</small></span>
+                                    <span class="card-age">${age} ans</span>
+                                </div>
+
+                                <div class="card-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">taille</span>
+                                        <span class="detail-value">${taille}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">rencontres</span>
+                                        <span class="detail-value">${nbRencontres}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">physique</span>
+                                        <span class="detail-value alt">${physiqueIcon} ${physiqueLabel}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">émotionnel</span>
+                                        <span class="detail-value alt">${emotionnelIcon} ${emotionnelLabel}</span>
+                                    </div>
+                                </div>
+
+                                <div class="card-flags">
+                                    <div class="flag-group">
+                                        <span class="flag-badge ${physique === 'true' ? 'true' : 'false'}">
+                                            <span class="icon">💞</span> physique
+                                        </span>
+                                        <span class="flag-badge ${emotionnel === 'true' ? 'true' : 'false'}">
+                                            <span class="icon">🧠</span> émotion.
+                                        </span>
+                                    </div>
+                                    ${etoilesHtml}
+                                </div>
+
+                                <div class="card-footer">
+                                    <span class="note-finale">${noteFinale}</span>
+                                    <span class="repeat-badge">
+                                        <span class="icon">${recommencerIcon}</span> ${recommencerText}
+                                    </span>
+                                </div>
+                                <span class="flip-hint">🔄 passez la souris</span>
+                            </div>
+
+                            <!-- VERSO -->
+                            <div class="card-face card-back">
+                                <div class="card-back-content">
+                                    <div class="card-back-title">📝 Détails & notes</div>
+                                    
+                                    <div class="card-back-field">
+                                        <span class="card-back-label">👤 Nom</span>
+                                        <span class="card-back-value">${nom}</span>
+                                    </div>
+                                    
+                                    <div class="card-back-field">
+                                        <span class="card-back-label">💼 Profession</span>
+                                        <span class="card-back-value">${formation}</span>
+                                    </div>
+                                    
+                                    <div class="card-back-field">
+                                        <span class="card-back-label">📅 Âge / Taille</span>
+                                        <span class="card-back-value">${age} ans · ${taille}</span>
+                                    </div>
+                                    
+                                    <div class="card-back-field">
+                                        <span class="card-back-label">📌 Rencontres</span>
+                                        <span class="card-back-value">${nbRencontres}</span>
+                                    </div>
+                                    
+                                    <div class="card-back-field card-back-notes">
+                                        <span class="card-back-label">✏️ Mes notes</span>
+                                        <textarea onchange="atualizarNota(${index}, this.value)" placeholder="Ajoutez vos notes ici...">${notes}</textarea>
+                                    </div>
+                                    
+                                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+                                        <span style="font-size: 0.7rem; color: var(--cor-texto-secundario);">
+                                            ${physique === 'true' ? '💚 physique' : '🤍 physique'} · 
+                                            ${emotionnel === 'true' ? '💗 émotionnel' : '🤍 émotionnel'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ─── ATUALIZAR NOTA ───
+        function atualizarNota(index, valor) {
+            if (data[index]) {
+                data[index].notes = valor;
+                // Salvar no localStorage se quiser persistência
+                // localStorage.setItem('rendezvous_data', JSON.stringify(data));
+            }
+        }
+
+        // ─── HOME STATS ───
+        function updateHomeStats() {
+            const container = document.getElementById('homeStats');
+            const total = data.length;
+            const repeated = data.filter(d => d["je le ferai à noveau?"] === "true").length;
+            const avgBeauty = data.reduce((acc, d) => {
+                const b = parseInt(d["beauté"]);
+                return acc + (isNaN(b) ? 0 : b);
+            }, 0) / (total || 1);
+            const avgNote = data.reduce((acc, d) => {
+                const n = parseFloat(d["note finale"]);
+                return acc + (isNaN(n) ? 0 : n);
+            }, 0) / (total || 1);
+
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${total}</div>
+                    <div class="stat-label">Rendez-vous</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${repeated}</div>
+                    <div class="stat-label">À refaire ❤️</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${avgBeauty.toFixed(1)}/5</div>
+                    <div class="stat-label">Beauté moyenne</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${avgNote.toFixed(1)}/5</div>
+                    <div class="stat-label">Note moyenne</div>
+                </div>
+            `;
+        }
+
+        // ─── STATS DÉTAILLÉES ───
+        function updateStatsDetails() {
+            const container = document.getElementById('statsDetails');
+            const total = data.length;
+            const repeated = data.filter(d => d["je le ferai à noveau?"] === "true").length;
+            const notRepeated = total - repeated;
+            const withPhysique = data.filter(d => d["intimité physique"] === "true").length;
+            const withEmotionnel = data.filter(d => d["intimité émotionelle"] === "true").length;
+            const both = data.filter(d => d["intimité physique"] === "true" && d["intimité émotionelle"] === "true").length;
+
+            // Média por idade
+            const ages = data.map(d => parseInt(d["l'âge"])).filter(a => !isNaN(a));
+            const avgAge = ages.length > 0 ? (ages.reduce((a,b) => a+b, 0) / ages.length).toFixed(1) : '—';
+
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${total}</div>
+                    <div class="stat-label">Total rendez-vous</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${repeated}</div>
+                    <div class="stat-label">À refaire ✅</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${notRepeated}</div>
+                    <div class="stat-label">Pas à refaire ❌</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${withPhysique}</div>
+                    <div class="stat-label">Intimité physique 💚</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${withEmotionnel}</div>
+                    <div class="stat-label">Intimité émotionnelle 💗</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${both}</div>
+                    <div class="stat-label">Les deux ✨</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${avgAge}</div>
+                    <div class="stat-label">Âge moyen</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.length}</div>
+                    <div class="stat-label">Notes enregistrées</div>
+                </div>
+            `;
+        }
+
+        // ─── AJOUTER CARD ───
+        function ajouterCard() {
+            const nouveau = {
+                "comment il s'appelle?": prompt("Nom du rendez-vous ?", "Nouveau rencontre"),
+                "formation professionnelle ou universitaire": prompt("Profession ?", "métier"),
+                "l'âge": prompt("Âge ?", "25"),
+                "hauteur": prompt("Taille ?", "1,75m"),
+                "nombre de rencontres": prompt("Nombre de rencontres ?", "1"),
+                "intimité physique": confirm("Intimité physique ?") ? "true" : "false",
+                "intimité émotionelle": confirm("Intimité émotionnelle ?") ? "true" : "false",
+                "beauté": prompt("Note de beauté (0-5) ?", "4/5"),
+                "note finale": prompt("Note finale ?", "3.5/5"),
+                "je le ferai à noveau?": confirm("Recommencerais-tu ?") ? "true" : "false",
+                "notes": prompt("Notes supplémentaires ?", "Mes impressions...")
+            };
+            
+            data.push(nouveau);
+            renderCards();
+            
+            // Se estiver na página stats, atualizar
+            if (document.getElementById('page-stats').classList.contains('active')) {
+                updateStatsDetails();
+            }
+        }
+
+        // ─── INIT ───
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards();
+            updateHomeStats();
+        });
+
+
+    </script>
+        <script src="app.js"></script>
+
 </body>
 </html>
