@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Journal de mes Rencontres</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Le Journal de mes Rencontres</h1>
+        <p>Analyses détaillées et suivis de mes dates au fil de l'année.</p>
+    </header>
+
+    <!-- Statistics Section -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Rencontres</h3>
+            <div class="value" id="stat-total-dates">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>Taux de Match</h3>
+            <div class="value" id="stat-repeat-rate">0%</div>
+        </div>
+        <div class="stat-card">
+            <h3>Moyenne Beauté</h3>
+            <div class="value" id="stat-avg-beauty">0/5</div>
+        </div>
+        <div class="stat-card">
+            <h3>Note Globale</h3>
+            <div class="value" id="stat-avg-final">0/5</div>
+        </div>
+    </div>
+
+    <!-- Filters and Search Bar -->
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Rechercher par nom ou profession..." oninput="filterAndRender()">
+        </div>
+        <div class="filter-groups">
+            <select id="filter-repeat" onchange="filterAndRender()">
+                <option value="all">À refaire ? (Tous)</option>
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+            </select>
+            <select id="filter-intimacy" onchange="filterAndRender()">
+                <option value="all">Intimité Physique (Tous)</option>
+                <option value="true">Avec</option>
+                <option value="false">Sans</option>
+            </select>
+            <select id="sort-by" onchange="filterAndRender()">
+                <option value="default">Trier par...</option>
+                <option value="note-desc">Note finale (Élevée)</option>
+                <option value="beauty-desc">Beauté (Élevée)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="main-layout">
+        <!-- Cards Column -->
+        <div class="cards-grid" id="cards-container">
+            <!-- Dynamic Cards Load Here -->
+        </div>
+
+        <!-- Sidebar Form Column -->
+        <div class="sidebar">
+            <h2>Ajouter une Entrée</h2>
+            <form id="date-form" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label>Comment il s'appelle ?</label>
+                    <input type="text" id="form-name" required placeholder="Ex: M, mullet boy">
+                </div>
+                <div class="form-group">
+                    <label>Formation Pro / Uni</label>
+                    <input type="text" id="form-job" required placeholder="Ex: Avocat">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Âge</label>
+                        <input type="number" id="form-age" required placeholder="24">
+                    </div>
+                    <div class="form-group">
+                        <label>Hauteur</label>
+                        <input type="text" id="form-height" required placeholder="1,74m">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nombre de rencontres</label>
+                    <input type="text" id="form-encounters" required placeholder="Ex: > 5">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Intimité Physique</label>
+                        <select id="form-physical">
+                            <option value="true">Oui</option>
+                            <option value="false" selected>Non</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Intimité Émotionnelle</label>
+                        <select id="form-emotional">
+                            <option value="true">Oui</option>
+                            <option value="false" selected>Non</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Beauté</label>
+                        <select id="form-beauty">
+                            <option value="5/5">5/5</option>
+                            <option value="4/5" selected>4/5</option>
+                            <option value="3/5">3/5</option>
+                            <option value="2/5">2/5</option>
+                            <option value="1/5">1/5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Note Finale</label>
+                        <select id="form-final">
+                            <option value="5/5">5/5</option>
+                            <option value="4/5">4/5</option>
+                            <option value="3/5" selected>3/5</option>
+                            <option value="2/5">2/5</option>
+                            <option value="1/5">1/5</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>À refaire ?</label>
+                    <select id="form-again">
+                        <option value="true" selected>Oui</option>
+                        <option value="false">Non</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </form>
+
+            <div class="json-section">
+                <button class="btn btn-secondary" onclick="exportJSON()">Exporter le JSON mis à jour</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
