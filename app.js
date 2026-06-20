@@ -3,40 +3,40 @@
 let data = [];
 let dadosCarregados = false;
 
-// ─── FUNÇÃO PARA CARREGAR DADOS DO JSON ───
+// ─── FUNÇÃO PARA CARREGAR DADOS DO DISCO (NATIVO ELECTRON) ───
 async function carregarDados() {
     try {
-        const response = await fetch('data.json');
+        console.log('📡 Chargement des données depuis le disque...');
         
-        // Verifica se a resposta foi bem-sucedida
-        if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
+        // Chama a ponte nativa do Electron para ler o arquivo do HD
+        const dadosDoDisco = await window.desktopAPI.loadDates();
+        
+        if (dadosDoDisco) {
+            data = dadosDoDisco;
+            dadosCarregados = true;
+            console.log('✅ Dados carregados com sucesso!', data.length, 'cards encontrados');
+            
+            // Renderiza tudo após carregar
+            renderCards();
+            updateHomeStats();
+            
+            if (document.getElementById('page-stats').classList.contains('active')) {
+                updateStatsDetails();
+            }
         }
-        
-        data = await response.json();
-        dadosCarregados = true;
-        console.log('✅ Dados carregados com sucesso!', data.length, 'cards encontrados');
-        
-        // Renderiza tudo após carregar
-        renderCards();
-        updateHomeStats();
-        if (document.getElementById('page-stats').classList.contains('active')) {
-            updateStatsDetails();
-        }
-        
     } catch (error) {
-        console.error('❌ Erro ao carregar dados:', error);
+        console.error('❌ Erro ao carregar dados do disco:', error);
         dadosCarregados = false;
         data = [];
         
-        // Mostra mensagem de erro no lugar dos cards
+        // Mostra mensagem de erro no lugar dos cards usando estilos inline
         const container = document.getElementById('cardsContainer');
         if (container) {
             container.innerHTML = `
                 <div class="empty-state" style="grid-column: 1/-1;">
-                    ⚠️ Erro ao carregar dados: ${error.message}<br>
+                    ⚠️ Erro ao carregar dados nativos: ${error.message}<br>
                     <small style="display:block; margin-top: 0.5rem;">
-                        Verifique se o arquivo <strong>data.json</strong> está na mesma pasta do index.html
+                        Verifique a integridade do arquivo arquivo <strong>dates.json</strong> na raiz do sistema.
                     </small>
                 </div>
             `;
@@ -44,46 +44,32 @@ async function carregarDados() {
     }
 }
 
-// ─── FUNÇÃO PARA SALVAR DADOS (localStorage) ───
-function salvarDadosLocal() {
+// ─── FUNÇÃO PARA SALVAR DADOS NO DISCO (NATIVO ELECTRON) ───
+async function salvarDadosLocal() {
     try {
-        localStorage.setItem('rendezvous_data', JSON.stringify(data));
-        console.log('💾 Dados salvos localmente');
-    } catch (error) {
-        console.warn('⚠️ Não foi possível salvar no localStorage:', error);
-    }
-}
-
-function carregarDadosLocal() {
-    try {
-        const saved = localStorage.getItem('rendezvous_data');
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            if (parsed && parsed.length > 0) {
-                data = parsed;
-                dadosCarregados = true;
-                console.log('📂 Dados carregados do localStorage!', data.length, 'cards');
-                return true;
-            }
+        // Envia o array atualizado para o processo principal gravar no arquivo físico
+        const result = await window.desktopAPI.saveDates(data);
+        if (result && result.success) {
+            console.log('💾 Dados gravados com sucesso no arquivo do computador');
+        } else {
+            console.warn('⚠️ Falha ao gravar dados:', result ? result.error : 'Erro desconhecido');
         }
-        return false;
     } catch (error) {
-        console.warn('⚠️ Erro ao ler localStorage:', error);
-        return false;
+        console.error('❌ Erro de comunicação IPC ao tentar salvar:', error);
     }
 }
 
-// ─── ATUALIZAR NOTA (modificado) ───
-function atualizarNota(index, valor) {
+// ─── ATUALIZAR NOTA (NATIVO & ASSÍNCRONO) ───
+async function atualizarNota(index, valor) {
     if (data[index]) {
         data[index].notes = valor;
-        salvarDadosLocal(); // Salva no localStorage
+        await salvarDadosLocal(); // Grava direto no HD de forma automática
         console.log('📝 Nota atualizada para card', index);
     }
 }
 
-// ─── AJOUTER CARD (modificado) ───
-function ajouterCard() {
+// ─── AJOUTER CARD (NATIVO & ASSÍNCRONO) ───
+async function ajouterCard() {
     const nouveau = {
         "comment il s'appelle?": prompt("Nom du rendez-vous ?", "Nouveau rencontre"),
         "formation professionnelle ou universitaire": prompt("Profession ?", "métier"),
@@ -99,7 +85,7 @@ function ajouterCard() {
     };
     
     data.push(nouveau);
-    salvarDadosLocal(); // Salva no localStorage
+    await salvarDadosLocal(); // Grava direto no HD de forma automática
     renderCards();
     
     // Se estiver na página stats, atualizar
@@ -110,7 +96,7 @@ function ajouterCard() {
     console.log('➕ Novo card adicionado! Total:', data.length);
 }
 
-// ─── RENDER CARDS (MANTIDO IGUAL) ───
+// ─── RENDER CARDS ───
 function renderCards() {
     const container = document.getElementById('cardsContainer');
     if (!container) return;
@@ -159,7 +145,6 @@ function renderCards() {
         html += `
             <div class="card-flip-container">
                 <div class="card-flip">
-                    <!-- FRENTE -->
                     <div class="card-face card-front">
                         <div class="card-header">
                             <span class="card-nom">${nom} <small>${formation}</small></span>
@@ -206,7 +191,6 @@ function renderCards() {
                         <span class="flip-hint">🔄 passez la souris</span>
                     </div>
 
-                    <!-- VERSO -->
                     <div class="card-face card-back">
                         <div class="card-back-content">
                             <div class="card-back-title">📝 Détails & notes</div>
@@ -354,21 +338,8 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     });
 });
 
-// ─── INIT ───
+// ─── INIT NATIVO DESKTOP ───
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Application démarrée');
-    
-    const localData = carregarDadosLocal();
-    
-    if (!localData) {
-        console.log('📡 Chargement des données depuis data.json...');
-        carregarDados();
-    } else {
-        console.log('💾 Utilisation des données du localStorage');
-        renderCards();
-        updateHomeStats();
-        if (document.getElementById('page-stats').classList.contains('active')) {
-            updateStatsDetails();
-        }
-    }
+    console.log('🚀 Application desktop native démarrée');
+    carregarDados();
 });
