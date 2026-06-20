@@ -909,29 +909,159 @@
         }
 
         // ─── AJOUTER CARD ───
-        function ajouterCard() {
-            const nouveau = {
-                "comment il s'appelle?": prompt("Nom du rendez-vous ?", "Nouveau rencontre"),
-                "formation professionnelle ou universitaire": prompt("Profession ?", "métier"),
-                "l'âge": prompt("Âge ?", "25"),
-                "hauteur": prompt("Taille ?", "1,75m"),
-                "nombre de rencontres": prompt("Nombre de rencontres ?", "1"),
-                "intimité physique": confirm("Intimité physique ?") ? "true" : "false",
-                "intimité émotionelle": confirm("Intimité émotionnelle ?") ? "true" : "false",
-                "beauté": prompt("Note de beauté (0-5) ?", "4/5"),
-                "note finale": prompt("Note finale ?", "3.5/5"),
-                "je le ferai à noveau?": confirm("Recommencerais-tu ?") ? "true" : "false",
-                "notes": prompt("Notes supplémentaires ?", "Mes impressions...")
-            };
+function ajouterCard() {
+    if (document.getElementById('modal-ajouter')) return;
+
+    // Cria o container escurecido do fundo (Overlay)
+    const overlay = document.createElement('div');
+    overlay.id = 'modal-ajouter';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(44, 37, 35, 0.6)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = '9999';
+
+    // Caixa do formulário
+    const modalBox = document.createElement('div');
+    modalBox.style.backgroundColor = '#fcfaf7';
+    modalBox.style.padding = '30px';
+    modalBox.style.borderRadius = '16px';
+    modalBox.style.width = '450px';
+    modalBox.style.maxHeight = '90vh';
+    modalBox.style.overflowY = 'auto';
+    modalBox.style.boxShadow = '0 20px 40px rgba(0,0,0,0.2)';
+    modalBox.style.border = '1px solid #ebdcd6';
+
+    // HTML Estruturado com os campos em francês
+    modalBox.innerHTML = `
+        <h2 style="color: #8c5363; margin-bottom: 20px; font-size: 1.5rem; border-bottom: 2px solid #ebdcd6; padding-bottom: 10px;">Ajouter une Rencontre</h2>
+        <form id="modal-form" style="display: flex; flex-direction: column; gap: 12px;">
             
-            data.push(nouveau);
-            renderCards();
-            
-            // Se estiver na página stats, atualizar
-            if (document.getElementById('page-stats').classList.contains('active')) {
-                updateStatsDetails();
-            }
+            <div style="display:flex; flex-direction:column; gap:4px;">
+                <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">NOM DU RENDEZ-VOUS</label>
+                <input type="text" id="m-name" required placeholder="Ex: M, mullet boy" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; outline: none;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:4px;">
+                <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">PROFESSION</label>
+                <input type="text" id="m-job" required placeholder="Ex: Avocat" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; outline: none;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">ÂGE</label>
+                    <input type="number" id="m-age" required placeholder="24" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; outline: none;">
+                </div>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">TAILLE (HAUTEUR)</label>
+                    <input type="text" id="m-height" required placeholder="1,74m" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; outline: none;">
+                </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:4px;">
+                <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">NOMBRE DE RENCONTRES</label>
+                <input type="text" id="m-encounters" required placeholder="Ex: > 5" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; outline: none;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">INTIMITÉ PHYSIQUE</label>
+                    <select id="m-physical" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; background: white;">
+                        <option value="false">Non</option>
+                        <option value="true">Oui</option>
+                    </select>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">INTIMITÉ ÉMOTIONNELLE</label>
+                    <select id="m-emotional" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; background: white;">
+                        <option value="false">Non</option>
+                        <option value="true">Oui</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">BEAUTÉ (0-5)</label>
+                    <input type="text" id="m-beauty" required placeholder="4/5" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; outline: none;">
+                </div>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">NOTE FINALE</label>
+                    <input type="text" id="m-final" required placeholder="3.5/5" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; outline: none;">
+                </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:4px;">
+                <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">RECOMMENCERAIS-TU ?</label>
+                <select id="m-again" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; background: white;">
+                    <option value="true">Oui</option>
+                    <option value="false">Non</option>
+                </select>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:4px;">
+                <label style="font-size: 0.8rem; font-weight: 600; color: #2c2523;">NOTES SUPPLÉMENTAIRES</label>
+                <textarea id="m-notes" rows="3" placeholder="Mes impressions..." style="padding: 8px 12px; border-radius: 8px; border: 1px solid #ebdcd6; outline: none; resize: none; font-family: inherit;"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button type="button" id="btn-cancel-modal" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ebdcd6; background: #ebdcd6; color: #7d726e; cursor: pointer; font-weight: bold;">Annuler</button>
+                <button type="submit" style="flex: 2; padding: 10px; border-radius: 8px; border: none; background: #8c5363; color: white; cursor: pointer; font-weight: bold;">Enregistrer</button>
+            </div>
+        </form>
+    `;
+
+    overlay.appendChild(modalBox);
+    document.body.appendChild(overlay);
+
+    // Botão Cancelar
+    document.getElementById('btn-cancel-modal').addEventListener('click', () => {
+        overlay.remove();
+    });
+
+    // Enviar Formulário
+// Enviar Formulário (Atualizado para se comunicar direto com o Electron)
+    document.getElementById('modal-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const nouveau = {
+            "comment il s'appelle?": document.getElementById('m-name').value,
+            "formation professionnelle ou universitaire": document.getElementById('m-job').value,
+            "l'âge": document.getElementById('m-age').value,
+            "hauteur": document.getElementById('m-height').value,
+            "nombre de rencontres": document.getElementById('m-encounters').value,
+            "intimité physique": document.getElementById('m-physical').value,
+            "intimité émotionelle": document.getElementById('m-emotional').value,
+            "beauté": document.getElementById('m-beauty').value,
+            "note finale": document.getElementById('m-final').value,
+            "je le ferai à noveau?": document.getElementById('m-again').value,
+            "notes": document.getElementById('m-notes').value || "Aucune note pour ce rendez-vous."
+        };
+
+        // 1. Adiciona o novo date ao array de memória
+        data.push(nouveau);
+        
+        // 2. CORREÇÃO AQUI: Chama a API nativa do Electron direto, sem depender do app.js
+        await window.desktopAPI.saveDates(data); 
+        console.log('💾 Salvamento nativo concluído diretamente no HD!');
+
+        // 3. Atualiza a interface gráfica
+        renderCards();
+        updateHomeStats();
+        
+        if (document.getElementById('page-stats').classList.contains('active')) {
+            updateStatsDetails();
         }
+
+        // 4. Fecha a janela flutuante
+        overlay.remove(); 
+    });
+}
 
         // ─── INIT ───
 document.addEventListener('DOMContentLoaded', () => {

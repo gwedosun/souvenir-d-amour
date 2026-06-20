@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": ".\\node_modules\\electron\\dist\\electron.exe ."
   },
   "repository": {
     "type": "git",
@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/gwedosun/souvenir-d-amour/issues"
   },
-  "homepage": "https://github.com/gwedosun/souvenir-d-amour#readme"
+  "homepage": "https://github.com/gwedosun/souvenir-d-amour#readme",
+  "devDependencies": {
+    "electron": "^42.4.1"
+  }
 }

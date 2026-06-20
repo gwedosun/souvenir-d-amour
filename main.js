@@ -21,6 +21,8 @@ function createWindow() {
     // Remove a barra de menus padrão para parecer um software comercial limpo
     win.setMenuBarVisibility(false);
     win.loadFile('index.html');
+
+    win.webContents.openDevTools();
 }
 
 // Ouvintes de segurança (IPC) para ler e escrever arquivos no computador
